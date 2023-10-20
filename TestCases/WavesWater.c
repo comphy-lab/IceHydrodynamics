@@ -6,8 +6,8 @@
 The density and viscosity of the upper fluid is so low that it does not
 effect the flow inside the first one, resulting in a surface wave.
 */
-#define Rhor (1e-3)
-#define MUr (1e-3)
+#define Rhor (1e-1)
+#define MUr (1e-2)
 
 // Galileo number: gL^3/(\mu/\rho)^2
 #define Ga 1e4
