@@ -1,3 +1,6 @@
+#ifndef BASILISK_HEADER_1
+#define BASILISK_HEADER_1
+#line 1 "./../src-IceHydro/reduced-IceHydro.h"
 /**
 # Reduced gravity 
 
@@ -61,3 +64,4 @@ event acceleration (i++)
   }
 
 }
+#endif

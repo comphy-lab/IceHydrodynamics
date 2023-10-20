@@ -1,3 +1,6 @@
+#ifndef BASILISK_HEADER_24
+#define BASILISK_HEADER_24
+#line 1 "./../src-IceHydro/two-phase-IceHydro.h"
 #include "vof.h"
 
 scalar f[], fOcean[], * interfaces = {f, fOcean}; // f = 1 is ice+ocean and fOcean = 1 in ocean only
@@ -132,3 +135,5 @@ event properties (i++)
   sfOcean.dirty = true; // boundary conditions need to be updated
 #endif
 }
+
+#endif

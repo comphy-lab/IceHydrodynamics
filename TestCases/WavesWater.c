@@ -2,6 +2,7 @@
 #define FILTERED
 #include "two-phase.h"
 #include "reduced.h"
+
 /**
 The density and viscosity of the upper fluid is so low that it does not
 effect the flow inside the first one, resulting in a surface wave.
@@ -12,7 +13,7 @@ effect the flow inside the first one, resulting in a surface wave.
 // Galileo number: gL^3/(\mu/\rho)^2
 #define Ga 1e4
 // initial amplitude of the ocean wave
-#define A0 0.01
+#define A0 0.1
 
 #define tmax (4.)
 #define tsnap (tmax/100.)
@@ -24,7 +25,7 @@ effect the flow inside the first one, resulting in a surface wave.
 char nameOut[80], amplitudeFile[80], name[80];
 static FILE * fp1 = NULL;
 static FILE * fp2 = NULL;
-#define MAXlevel 9
+#define MAXlevel 7
 #define MINlevel 0
 int LEVEL;
 
