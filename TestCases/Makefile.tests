@@ -1,0 +1,16 @@
+# Automatically generated using 'make Makefile.tests'
+# DO NOT EDIT, edit 'Makefile' instead
+ALLTESTS = \
+	IceOnWaterWaves.c \
+	ViscousOilOnWaterWaves.c \
+	WavesWater.c \
+
+TESTS = \
+
+SPECIAL_TESTS = \
+
+ALLPAGES = \
+	IceOnWaterWaves.c.page \
+	ViscousOilOnWaterWaves.c.page \
+	WavesWater.c.page \
+

@@ -19,7 +19,7 @@
 #define A0_IceAir 0.1 // initial amplitude of the ice-air interface
 
 // thickness of the ice sheet
-#define hIce 0.1
+#define hIce 0.02
 
 // wave length of the surface waves.. lambda_Ocean is always 1. change lambda_IceAir to control the asymmetry of the standing waves
 #define lambda_Ocean 1.0 // fix this to 1 always.. this is the length scale of the problem
@@ -31,6 +31,7 @@
 #define fErr (1e-3)
 #define VelErr (1e-2)
 #define OmegaErr (1e-3)
+#define KAPPAErr (1e-4)
 
 char nameOut[80], amplitudeFile[80], name[80];
 static FILE * fp1 = NULL;
@@ -90,7 +91,7 @@ event adapt (i++) {
   curvature(fOcean, KAPPAOcean);
   vorticity (u, omega);
   adapt_wavelet ((scalar *){f, u.x, u.y, omega, KAPPA, KAPPAOcean},
-     (double[]){fErr, VelErr, VelErr, OmegaErr, 1e-4, 1e-4},
+     (double[]){fErr, VelErr, VelErr, OmegaErr, KAPPAErr, KAPPAErr},
       maxlevel = MAXlevel, minlevel = MINlevel);
 }
 

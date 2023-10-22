@@ -3,6 +3,8 @@
 
 *.s*
 */*.s*
+*.tst*
+*/*.tst*
 */*/intermediate*
 *dump*
 */*dump*
@@ -11,6 +13,9 @@
 *.DS_Store
 */*.DS_Store
 */*/*.DS_Store
+
+*/*/Video
+*/Video
 
 # Object files
 *.o

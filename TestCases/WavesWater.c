@@ -3,15 +3,12 @@
 #include "two-phase.h"
 #include "reduced.h"
 
-/**
-The density and viscosity of the upper fluid is so low that it does not
-effect the flow inside the first one, resulting in a surface wave.
-*/
-#define Rhor (1e-1)
-#define MUr (1e-2)
+// density and viscosity ratios
+#define Rhor_AirOcean (1e-1) // this is the density ratio of air to that of the ocean...
+#define Mur_AirOcean 1e-2  // this is the viscosity ratio of air to that of the ocean...
 
-// Galileo number: gL^3/(\mu/\rho)^2
-#define Ga 1e4
+// viscosities
+#define Ga 1e4 // Galileo number: gL^3/(\mu/\rho)^2 -- this is based on the viscosity of ocean
 // initial amplitude of the ocean wave
 #define A0 0.1
 
@@ -21,12 +18,16 @@ effect the flow inside the first one, resulting in a surface wave.
 #define fErr (1e-3)
 #define VelErr (1e-2)
 #define OmegaErr (1e-3)
+#define KAPPAErr (1e-4)
 
 char nameOut[80], amplitudeFile[80], name[80];
 static FILE * fp1 = NULL;
 static FILE * fp2 = NULL;
-#define MAXlevel 7
-#define MINlevel 0
+
+// grid resolution 
+#define MAXlevel 7 // maximum level of refinement
+#define MINlevel 0 // minimum level of refinement
+
 int LEVEL;
 
 uf.n[left]   = 0.;
@@ -51,8 +52,9 @@ int main() {
 
   LEVEL = MAXlevel;
   init_grid(1 << LEVEL);
-  rho1 = 1.0; rho2 = Rhor;
-  mu1 = 1./sqrt(Ga); mu2 = MUr/sqrt(Ga);
+  rho1 = 1.0; rho2 = Rhor_AirOcean;
+  mu1 = 1./sqrt(Ga); mu2 = Mur_AirOcean/sqrt(Ga);
+  G.y = -1.; // acceleration due to gravity
 
   char comm[80];
   sprintf (comm, "mkdir -p intermediate");
@@ -60,8 +62,6 @@ int main() {
 
   fp1 = fopen ("logfile.dat", "w");
   fp2 = fopen ("amplitude.dat", "w");
-
-  G.y = -1.;
 
   run();
 
@@ -74,7 +74,7 @@ event adapt (i++) {
   curvature(f, KAPPA);
   vorticity (u, omega);
   adapt_wavelet ((scalar *){f, u.x, u.y, omega, KAPPA},
-     (double[]){fErr, VelErr, VelErr, OmegaErr, 1e-4},
+     (double[]){fErr, VelErr, VelErr, OmegaErr, KAPPAErr},
       maxlevel = MAXlevel, minlevel = MINlevel);
 }
 
@@ -114,7 +114,7 @@ event amplitude (i++) {
   We output the corresponding evolution in a file indexed with the
   case number. */
   if (i == 0) {
-    fprintf (fp2, "t Amp\n");
+    fprintf (fp2, "t AmpOcean\n");
   }
   fprintf (fp2, "%g %g\n", t, max);
   fflush (fp2);
