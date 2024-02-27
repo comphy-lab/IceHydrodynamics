@@ -8,22 +8,23 @@
 
 // densities
 #define Rhor_IceOcean (1e0) // this is the density ratio of thin layer on top of ocean and ocean...
-#define Rhor_AirOcean (1e-1) // this is the density ratio of air to that of the ocean...
+#define Rhor_AirOcean (1e-3) // this is the density ratio of air to that of the ocean...
 
 // viscosities
-#define Ga 1e4 // Galileo number: gL^3/(\mu/\rho)^2 -- this is based on the viscosity of ocean
+#define Ga 1e6
+ // Galileo number: gL^3/(\mu/\rho)^2 -- this is based on the viscosity of ocean
 #define Mur_IceOcean 0. // (the sheet shouldn't be viscous) this is the viscosity ratio of thin layer on top of ocean and ocean...
 #define Mur_AirOcean 1e-2  // this is the viscosity ratio of air to that of the ocean...
 
 // initial amplitudes
-#define A0_OceanIce 0.1 // initial amplitude of the ocean-ice interface
-#define A0_IceAir 0.1 // initial amplitude of the ice-air interface
+#define A0_OceanIce 0.01 // initial amplitude of the ocean-ice interface
+#define A0_IceAir 0.01 // initial amplitude of the ice-air interface
 
 // thickness of the ice sheet
 #define hIce 0.1
 
 // Elastic properties of the ice sheet
-#define ElasticNumber 1.0 // this is the ratio of the elastic modulus of the ice sheet to gravitational head: rho_Ocean*g*Lambda_Ocean
+#define ElasticModulus (0.1) // this is the ratio of the elastic modulus of the ice sheet to gravitational head: rho_Ocean*g*Lambda_Ocean
 
 // wave length of the surface waves.. lambda_Ocean is always 1. change lambda_IceAir to control the asymmetry of the standing waves
 #define lambda_Ocean 1.0 // fix this to 1 always.. this is the length scale of the problem
@@ -42,7 +43,7 @@ static FILE * fp1 = NULL;
 static FILE * fp2 = NULL;
 
 // grid resolution 
-#define MAXlevel 9 // maximum level of refinement
+#define MAXlevel 7 // maximum level of refinement
 #define MINlevel 0 // minimum level of refinement
 
 int LEVEL;
@@ -96,7 +97,7 @@ int main() {
 
 event properties (i++) {
   foreach () {
-    GIced[] = (f[]*(1.-fOcean[]) < (1e-6) ? 0.: ElasticNumber); // this is an artificial patch for now. The code has issues with VE terms in the interfacial cells!
+    GIced[] = (f[]*(1.-fOcean[]) < (1e-6) ? 0.: ElasticModulus); // this is an artificial patch for now. The code has issues with VE terms in the interfacial cells!
   }
 }
 
@@ -158,7 +159,7 @@ event amplitude (i++) {
 event logfile (i++) {
   double ke = 0.;
   foreach (reduction(+:ke)){
-    ke += sq(Delta)*(sq(u.x[]) + sq(u.y[]))*f[];
+    ke += sq(Delta)*(sq(u.x[]) + sq(u.y[]))*f[]; //Kinetic energy
   }
   fprintf (fp1, "%g %g %d\n", t, ke, mgp.i);
   fprintf (ferr, "%d %g %g %d\n", i, t, ke, mgp.i);

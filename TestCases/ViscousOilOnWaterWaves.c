@@ -5,29 +5,6 @@
 
 // note that here, ice is just a proxy for the thin layer on top of the bath!!
 
-// densities
-#define Rhor_IceOcean (1e0) // this is the density ratio of thin layer on top of ocean and ocean...
-#define Rhor_AirOcean (1e-2) // this is the density ratio of air to that of the ocean...
-
-// viscosities
-#define Ga 1e4 // Galileo number: gL^3/(\mu/\rho)^2 -- this is based on the viscosity of ocean
-#define Mur_IceOcean 1e0 // this is the viscosity ratio of thin layer on top of ocean and ocean...
-#define Mur_AirOcean 1e-2  // this is the viscosity ratio of air to that of the ocean...
-
-// initial amplitudes
-#define A0_OceanIce 0.1 // initial amplitude of the ocean-ice interface
-#define A0_IceAir 0.1 // initial amplitude of the ice-air interface
-
-// thickness of the ice sheet
-#define hIce 0.1 // 0.01
-
-// wave length of the surface waves.. lambda_Ocean is always 1. change lambda_IceAir to control the asymmetry of the standing waves
-#define lambda_Ocean 1.0 //1.0 fix this to 1 always.. this is the length scale of the problem
-#define lambda_IceAir 1.0 //1.0 this is the ratio of the wave length of the ice-air interface to that of the ocean-ice interface
-
-#define tmax (20.)
-#define tsnap (tmax/100.)
-
 #define fErr (1e-3)
 #define VelErr (1e-2)
 #define OmegaErr (1e-3)
@@ -37,12 +14,15 @@ char nameOut[80], amplitudeFile[80], name[80];
 static FILE * fp1 = NULL;
 static FILE * fp2 = NULL;
 
-// grid resolution 
-#define MAXlevel 9// maximum level of refinement
+double Rhor_IceOcean, Rhor_AirOcean, Ga, Mur_IceOcean, Mur_AirOcean;
+double hIce, lambda_Ocean, lambda_IceAir, A0_OceanIce, A0_IceAir;
+double tmax, step;
+#define tsnap (0.01)
+
+int MAXlevel;
 #define MINlevel 0 // minimum level of refinement
 
-int LEVEL;
-
+//Boundary conditions 
 u.n[top] = neumann(0.);
 p[top] = dirichlet(0.);
 /*default: 
@@ -58,21 +38,41 @@ event init (t = 0) {
   fraction (fOcean, - (y) + A0_OceanIce*cos (2.*pi*x/lambda_Ocean));
 }
 
-int main() {
+int main(int argc, char const *argv[]) {
+  if (argc < 7){
+    fprintf(ferr, "Lack of command line arguments. Check! Need %d more arguments\n",7-argc);
+    return 1;
+  }
+
+  // density and viscosity ratios
+  Rhor_IceOcean = atof(argv[1]);
+  Rhor_AirOcean = atof(argv[2]);
+  Ga = atof(argv[3]);
+  Mur_IceOcean = atof(argv[4]);
+  Mur_AirOcean = atof(argv[5]);
+  A0_OceanIce = atof(argv[6]);
+  A0_IceAir = atof(argv[7]);
+  hIce = atof(argv[8]);
+  lambda_Ocean = atof(argv[9]);
+  lambda_IceAir = atof(argv[10]);
+  tmax = atof(argv[11]);
+  step = atof(argv[12]);
+  MAXlevel = atoi(argv[13]); 
+
+  DT = step;
 
   L0 = 2.0;
-  Y0 = -L0/2.; 
-  // f.sigma = 0.0;
-  //TOLERANCE = 1e-6;
-  DT = 1e-3;
-
-  LEVEL = MAXlevel;
-  init_grid(1 << LEVEL);
+  Y0 = -L0/2.;
+  init_grid(1 << MAXlevel);
   
   rhoOcean = 1.0; rhoIce = Rhor_IceOcean; rhoAir = Rhor_AirOcean;
   muOcean = 1./sqrt(Ga); muIce = Mur_IceOcean/sqrt(Ga); muAir = Mur_AirOcean/sqrt(Ga);
 
   G.y = -1.; // acceleration due to gravity
+
+  fprintf(ferr, "Rhor_IceOcean %g, Rhor_AirOcean %g, Ga %g, Mur_IceOcean %g, Mur_AirOcean %g, A0_OceanIce %g, A0_IceAir %g, hIce %g, lambda_Ocean %g, lambda_IceAir %g, tmax %g, DT %g, level %d\n", 
+        Rhor_IceOcean, Rhor_AirOcean, Ga, Mur_IceOcean, Mur_AirOcean, A0_OceanIce, A0_IceAir, hIce, lambda_Ocean, lambda_IceAir, tmax, DT, MAXlevel);
+
 
   char comm[80];
   sprintf (comm, "mkdir -p intermediate");
