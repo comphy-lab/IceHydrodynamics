@@ -60,7 +60,7 @@ int main(int argc, char const *argv[]) {
   init_grid(1 << MAXlevel);
   rho1 = 1.0; rho2 = Rhor_AirOcean; 
   mu1 = 1./sqrt(Ga); mu2 = Mur_AirOcean/sqrt(Ga);
-  G.y = atof(argv[8]);
+  G.y = -1.;
 
   fprintf(ferr, "Level %d tmax %g. Rhor_AirOcean %g, Mur_AirOcean %g, Ga %g, A0 %g, DT %g, G.y %g\n", 
         MAXlevel, tmax, Rhor_AirOcean, Mur_AirOcean, Ga, A0, DT, G.y);
