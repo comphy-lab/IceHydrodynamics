@@ -62,6 +62,10 @@ int main(int argc, char const *argv[]) {
   step = atof(argv[13]);
   MAXlevel = atoi(argv[14]); 
 
+  fprintf(ferr, "Rhor_IceOcean %g, Rhor_AirOcean %g, Ga %g, Mur_IceOcean %g, Mur_AirOcean %g, A0_OceanIce %g, A0_IceAir %g, hIce %g, lambda_Ocean %g, lambda_IceAir %g, ElasticModulus %g, tmax %g, step %g, MAXlevel %d\n", 
+        Rhor_IceOcean, Rhor_AirOcean, Ga, Mur_IceOcean, Mur_AirOcean, A0_OceanIce, A0_IceAir, hIce, lambda_Ocean, lambda_IceAir, ElasticModulus, tmax, step, MAXlevel);
+
+
   L0 = 2.0;
   Y0 = -L0/2.;
   DT = step;
