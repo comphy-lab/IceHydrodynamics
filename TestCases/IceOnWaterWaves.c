@@ -6,33 +6,6 @@
 
 // note that here, ice is just a proxy for the thin layer on top of the bath!!
 
-// densities
-#define Rhor_IceOcean (1e0) // this is the density ratio of thin layer on top of ocean and ocean...
-#define Rhor_AirOcean (1e-3) // this is the density ratio of air to that of the ocean...
-
-// viscosities
-#define Ga 1e6
- // Galileo number: gL^3/(\mu/\rho)^2 -- this is based on the viscosity of ocean
-#define Mur_IceOcean 0. // (the sheet shouldn't be viscous) this is the viscosity ratio of thin layer on top of ocean and ocean...
-#define Mur_AirOcean 1e-2  // this is the viscosity ratio of air to that of the ocean...
-
-// initial amplitudes
-#define A0_OceanIce 0.01 // initial amplitude of the ocean-ice interface
-#define A0_IceAir 0.01 // initial amplitude of the ice-air interface
-
-// thickness of the ice sheet
-#define hIce 0.1
-
-// Elastic properties of the ice sheet
-#define ElasticModulus (0.1) // this is the ratio of the elastic modulus of the ice sheet to gravitational head: rho_Ocean*g*Lambda_Ocean
-
-// wave length of the surface waves.. lambda_Ocean is always 1. change lambda_IceAir to control the asymmetry of the standing waves
-#define lambda_Ocean 1.0 // fix this to 1 always.. this is the length scale of the problem
-#define lambda_IceAir 1.0 // this is the ratio of the wave length of the ice-air interface to that of the ocean-ice interface
-
-#define tmax (20.)
-#define tsnap (tmax/100.)
-
 #define fErr (1e-3)
 #define VelErr (1e-2)
 #define OmegaErr (1e-3)
@@ -42,11 +15,14 @@ char nameOut[80], amplitudeFile[80], name[80];
 static FILE * fp1 = NULL;
 static FILE * fp2 = NULL;
 
-// grid resolution 
-#define MAXlevel 7 // maximum level of refinement
+double Rhor_IceOcean, Rhor_AirOcean, Ga, Mur_IceOcean, Mur_AirOcean;
+double hIce, lambda_Ocean, lambda_IceAir, A0_OceanIce, A0_IceAir;
+double ElasticModulus, tmax, step;
+#define tsnap (0.01)
+
+int MAXlevel;
 #define MINlevel 0 // minimum level of refinement
 
-int LEVEL;
 
 /*Boundary conditions:*/
 u.n[top] = neumann(0.);
@@ -64,21 +40,42 @@ event init (t = 0) {
 }
 
 scalar GIced[];
-int main() {
+int main(int argc, char const *argv[]) {
+  if (argc < 14){
+    fprintf(ferr, "Lack of command line arguments. Check! Need %d more arguments\n",14-argc);
+    return 1;
+  }
+
+  // density and viscosity ratios
+  Rhor_IceOcean = atof(argv[1]);
+  Rhor_AirOcean = atof(argv[2]);
+  Ga = atof(argv[3]);
+  Mur_IceOcean = atof(argv[4]);
+  Mur_AirOcean = atof(argv[5]);
+  A0_OceanIce = atof(argv[6]);
+  A0_IceAir = atof(argv[7]);
+  hIce = atof(argv[8]);
+  lambda_Ocean = atof(argv[9]);
+  lambda_IceAir = atof(argv[10]);
+  ElasticModulus = atof(argv[11]);
+  tmax = atof(argv[12]);
+  step = atof(argv[13]);
+  MAXlevel = atoi(argv[14]); 
 
   L0 = 2.0;
   Y0 = -L0/2.;
+  DT = step;
   // f.sigma = 0.0;
   //TOLERANCE = 1e-6;
-  DT = 1e-3;
-
   LEVEL = MAXlevel;
   init_grid(1 << LEVEL);
   
   rhoOcean = 1.0; rhoIce = Rhor_IceOcean; rhoAir = Rhor_AirOcean;
   muOcean = 1./sqrt(Ga); muIce = Mur_IceOcean/sqrt(Ga); muAir = Mur_AirOcean/sqrt(Ga);
+  
+  // acceleration due to gravity
+  G.y = -1.;
 
-  G.y = -1.; // acceleration due to gravity
   // Ice-sheet
   GIce = GIced;
 
