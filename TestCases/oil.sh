@@ -23,3 +23,6 @@ export OMP_NUM_THREADS=8
 $Mur_AirOcean $A0_OceanIce $A0_IceAir $hIce $lambda_Ocean \
 $lambda_IceAir $tmax $DT $level
 
+python3 VideoGeneralCase.py
+ffmpeg -framerate 30 -pattern_type glob -i 'Video/*.png' -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -pix_fmt yuv420p Movie.mp4
+
