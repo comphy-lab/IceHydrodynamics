@@ -71,8 +71,7 @@ int main(int argc, char const *argv[]) {
   DT = step;
   // f.sigma = 0.0;
   //TOLERANCE = 1e-6;
-  LEVEL = MAXlevel;
-  init_grid(1 << LEVEL);
+  init_grid(1 << MAXlevel);
   
   rhoOcean = 1.0; rhoIce = Rhor_IceOcean; rhoAir = Rhor_AirOcean;
   muOcean = 1./sqrt(Ga); muIce = Mur_IceOcean/sqrt(Ga); muAir = Mur_AirOcean/sqrt(Ga);
