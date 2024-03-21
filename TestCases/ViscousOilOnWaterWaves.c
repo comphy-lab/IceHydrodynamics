@@ -39,8 +39,8 @@ event init (t = 0) {
 }
 
 int main(int argc, char const *argv[]) {
-  if (argc < 7){
-    fprintf(ferr, "Lack of command line arguments. Check! Need %d more arguments\n",7-argc);
+  if (argc < 13){
+    fprintf(ferr, "Lack of command line arguments. Check! Need %d more arguments\n",13-argc);
     return 1;
   }
 
@@ -69,10 +69,6 @@ int main(int argc, char const *argv[]) {
   muOcean = 1./sqrt(Ga); muIce = Mur_IceOcean/sqrt(Ga); muAir = Mur_AirOcean/sqrt(Ga);
 
   G.y = -1.; // acceleration due to gravity
-
-  fprintf(ferr, "Rhor_IceOcean %g, Rhor_AirOcean %g, Ga %g, Mur_IceOcean %g, Mur_AirOcean %g, A0_OceanIce %g, A0_IceAir %g, hIce %g, lambda_Ocean %g, lambda_IceAir %g, tmax %g, DT %g, level %d\n", 
-        Rhor_IceOcean, Rhor_AirOcean, Ga, Mur_IceOcean, Mur_AirOcean, A0_OceanIce, A0_IceAir, hIce, lambda_Ocean, lambda_IceAir, tmax, DT, MAXlevel);
-
 
   char comm[80];
   sprintf (comm, "mkdir -p intermediate");

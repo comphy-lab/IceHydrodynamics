@@ -15,12 +15,12 @@ static FILE * fp2 = NULL;
 
 
 //Boundary conditions
-uf.n[left]   = 0.;
+/*uf.n[left]   = 0.;
 uf.n[right]  = 0.;
 uf.n[top]    = 0.;
-uf.n[bottom] = 0.;
-//u.n[top] = neumann(0.);
-//p[top] = dirichlet(0.);
+uf.n[bottom] = 0.;*/
+u.n[top] = neumann(0.);
+p[top] = dirichlet(0.);
 
 
 double Rhor_AirOcean, Mur_AirOcean, Ga, A0;
@@ -48,24 +48,18 @@ int main(int argc, char const *argv[]) {
   Mur_AirOcean = atof(argv[2]); //OV:1e-2; this is the viscosity ratio of air to that of the ocean...
   Ga = atof(argv[3]); // gL^3/(\mu/\rho)^2 -- this is based on the viscosity of ocean
   A0 = atof(argv[4]); // initial amplitude of the ocean wave
-
-  //time
   tmax = atof(argv[5]);
   step = atof(argv[6]);
-  DT = step;
+  MAXlevel = atoi(argv[7]);
 
+  DT = step;
   L0 = 2.0;
   Y0 = -L0/2.;
-  MAXlevel = atoi(argv[7]);
   init_grid(1 << MAXlevel);
+
   rho1 = 1.0; rho2 = Rhor_AirOcean; 
   mu1 = 1./sqrt(Ga); mu2 = Mur_AirOcean/sqrt(Ga);
   G.y = -1.;
-
-  fprintf(ferr, "Level %d tmax %g. Rhor_AirOcean %g, Mur_AirOcean %g, Ga %g, A0 %g, DT %g, G.y %g\n", 
-        MAXlevel, tmax, Rhor_AirOcean, Mur_AirOcean, Ga, A0, DT, G.y);
-
-
 
   char comm[80];
   sprintf (comm, "mkdir -p intermediate");

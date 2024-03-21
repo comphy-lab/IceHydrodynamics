@@ -17,7 +17,7 @@ static FILE * fp2 = NULL;
 
 double Rhor_IceOcean, Rhor_AirOcean, Ga, Mur_IceOcean, Mur_AirOcean;
 double hIce, lambda_Ocean, lambda_IceAir, A0_OceanIce, A0_IceAir;
-double ElasticModulus, tmax, step;
+double ElasticModulus, tmax, step, L;
 #define tsnap (0.01)
 
 int MAXlevel;
@@ -41,8 +41,8 @@ event init (t = 0) {
 
 scalar GIced[];
 int main(int argc, char const *argv[]) {
-  if (argc < 14){
-    fprintf(ferr, "Lack of command line arguments. Check! Need %d more arguments\n",14-argc);
+  if (argc < 15){
+    fprintf(ferr, "Lack of command line arguments. Check! Need %d more arguments\n",15-argc);
     return 1;
   }
 
@@ -61,12 +61,9 @@ int main(int argc, char const *argv[]) {
   tmax = atof(argv[12]);
   step = atof(argv[13]);
   MAXlevel = atoi(argv[14]); 
+  L = atoi(argv[15]); 
 
-  fprintf(ferr, "Rhor_IceOcean %g, Rhor_AirOcean %g, Ga %g, Mur_IceOcean %g, Mur_AirOcean %g, A0_OceanIce %g, A0_IceAir %g, hIce %g, lambda_Ocean %g, lambda_IceAir %g, ElasticModulus %g, tmax %g, step %g, MAXlevel %d\n", 
-        Rhor_IceOcean, Rhor_AirOcean, Ga, Mur_IceOcean, Mur_AirOcean, A0_OceanIce, A0_IceAir, hIce, lambda_Ocean, lambda_IceAir, ElasticModulus, tmax, step, MAXlevel);
-
-
-  L0 = 2.0;
+  L0 = L;
   Y0 = -L0/2.;
   DT = step;
   // f.sigma = 0.0;
