@@ -17,7 +17,7 @@ static FILE * fp2 = NULL;
 double Rhor_IceOcean, Rhor_AirOcean, Ga, Mur_IceOcean, Mur_AirOcean;
 double hIce, lambda_Ocean, lambda_IceAir, A0_OceanIce, A0_IceAir;
 double tmax, step;
-#define tsnap (0.01)
+#define tsnap (0.01) 
 
 int MAXlevel;
 #define MINlevel 0 // minimum level of refinement
@@ -35,7 +35,8 @@ The initial condition is a small amplitude plane wave of wavelength ($\lambda$)
 unity. This wavelength is the relevant length scale for this problem. Note that $k = 2\pi$ */
 event init (t = 0) {
   fraction (f, - (y-hIce) + A0_IceAir*cos (2.*pi*x/lambda_IceAir));
-  fraction (fOcean, - (y) + A0_OceanIce*cos (2.*pi*x/lambda_Ocean));
+  fraction (fOcean, - (y) + A0_OceanIce*cos (2.*pi*x/lambda_Ocean)); //anti-symmetric
+
 }
 
 int main(int argc, char const *argv[]) {
@@ -122,8 +123,8 @@ event amplitude (i++) {
   (using height functions) and take the corresponding maximum. */
 
   scalar pos[], pofOcean[];
-  position (f, pos, {0,1});
-  position (fOcean, pofOcean, {0,1});
+  position (f, pos, {0,1}); //computing the position of the interface 
+  position (fOcean, pofOcean, {0,1}); //computing the position of the interface 
   double max = statsf(pos).max;
   double maxOcean = statsf(pofOcean).max;
 
