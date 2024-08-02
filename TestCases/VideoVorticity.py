@@ -25,8 +25,11 @@ def execute_process(exe):
     stdout, stderr = p.communicate()
     return stderr.decode("utf-8").split("\n")
 
-def get_segs(place):
-    temp2 = execute_process(["./getFacets", place])
+def get_segs(place, Ocean=False):
+    if Ocean:
+        temp2 = execute_process(["./getFacetsOceanIce", place])
+    else:
+        temp2 = execute_process(["./getFacets", place])
     segs = []
     skip = False
     temp2 = list(filter(None, temp2))
@@ -51,26 +54,32 @@ def get_field_values(place, xmin, xmax, ymin, ymax, ny):
     T = data[:,2].reshape((nx, ny)).transpose()
     return X, Y, T, nx
 
-def plot_graphics(t, name, xmin, xmax, ymin, ymax, segs, T):
+def plot_graphics(t, name, xmin, xmax, ymin, ymax, segs1, segs2, T):
 
     fig, ax = plt.subplots()
-    fig.set_size_inches(19.20, 10.80)
+    fig.set_size_inches(6.60, 8.60)
     rect = matplotlib.patches.Rectangle((xmin, ymin), xmax-xmin, ymax-ymin, linewidth=2, edgecolor='k', facecolor='none')
     ax.add_patch(rect)
-    line_segments = LineCollection(segs, linewidths=4, colors='green', linestyle='solid')
+
+    line_segments = LineCollection(segs1, linewidths=4, colors='green', linestyle='solid')
     ax.add_collection(line_segments)
 
-    ax.imshow(T, cmap="coolwarm", interpolation='Bilinear', origin='lower', extent= [xmin, xmax, ymin, ymax], vmax = 1.0, vmin = -1.0)
-        
-    ax.set_aspect('equal')
-    ax.set_xlim(xmin, xmax)
-    ax.set_ylim(ymin, ymax)
+    line_segments = LineCollection(segs2, linewidths=4, colors='black', linestyle='solid')
+    ax.add_collection(line_segments)
 
-    ax.set_title(r"$t = %5.4f$" % t, fontsize=20)
-    ax.axis('off')        
+    im = ax.imshow(T, cmap="seismic", interpolation='Bilinear', origin='lower', extent= [xmin, xmax, ymin, ymax], vmax = 1.0, vmin = -1.0)
+    cbar = plt.colorbar(im, ax=ax, orientation='vertical', shrink=0.7)  
+    #cbar.set_label('Vorticity')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.tick_params(left=False, right=False, top=False, bottom=False, labelleft=True, labelright=False, labeltop=False, labelbottom=True)
+    ax.set_aspect(10)
+    ax.set_xlim(xmin, xmax)
+    ax.set_ylim(ymin, ymax)       
 
     plt.savefig(name, bbox_inches='tight', dpi=300)
     plt.close()
+    
 
 def process_file(ti, folder, tSnap, xmin, xmax, ymin, ymax, ny, lw=2):
     t = tSnap*ti
@@ -78,17 +87,18 @@ def process_file(ti, folder, tSnap, xmin, xmax, ymin, ymax, ny, lw=2):
     name = f"{folder}/{int(t*1000):08d}.png"
 
     if not os.path.exists(place):
-        #print(f"{place} File not found!")
+        print(f"{place} File not found!")
         return
     elif os.path.exists(name):
         print(f"{name} Image present!")
         return
 
-    segs = get_segs(place)
+    segs1 = get_segs(place)
+    segs2 = get_segs(place, Ocean=True)
     X, Y, T, nz = get_field_values(place, xmin, xmax, ymin, ymax, ny)
     
-    plot_graphics(t, name, xmin, xmax, ymin, ymax, segs, T)
-
+    plot_graphics(t, name, xmin, xmax, ymin, ymax, segs1, segs2, T)
+    
     return nz
 
 
@@ -96,18 +106,18 @@ def main():
     # Set up command-line argument parser
     parser = argparse.ArgumentParser(description='Make videos of standing waves')
     parser.add_argument('--num_workers', type=int, default=8, help='Number of workers')
-    parser.add_argument('--tSnap', type=float, default=0.01, help='Snapshot time interval')
+    parser.add_argument('--tSnap', type=float, default=0.1, help='Snapshot time interval')
 
     args = parser.parse_args()
 
-    nGFS = 1000
+    nGFS = 1
     num_workers = args.num_workers
     tSnap = args.tSnap
 
-    ny = 1024
-    xmin, xmax, ymin, ymax = 0.0, 2.0, -1.0, 1.0
+    ny = 128
+    xmin, xmax, ymin, ymax = 0.0, 2.0, -0.075, 0.175
     lw = 2
-    folder = 'Video'
+    folder = 'Video_J'
     os.makedirs(folder,exist_ok=True)
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=num_workers) as executor:
@@ -121,4 +131,4 @@ def main():
                 print(f"Done {futures.index(future)+1}/{nGFS}! with nx = {nx}")
 
 if __name__ == "__main__":
-    main()
+    main()    

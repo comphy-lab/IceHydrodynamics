@@ -36,7 +36,7 @@ The initial condition is a small amplitude plane wave of wavelength ($\lambda$)
 unity. This wavelength is the relevant length scale for this problem. Note that $k = 2\pi$ */
 event init (t = 0) {
   fraction (f, - (y-hIce) + A0_IceAir*cos (2.*pi*x/lambda_IceAir));
-  fraction (fOcean, - (y) + A0_OceanIce*cos (2.*pi*x/lambda_Ocean));
+  fraction (fOcean, - (y) + A0_OceanIce*cos (2.*pi*x/lambda_Ocean)); //anti-symmetric
 }
 
 scalar GIced[];

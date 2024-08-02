@@ -112,25 +112,24 @@ $t+\Delta/2$. This improves the results. */
 
 event vof (i++, first);
 
+
 /**
-We output the amplitude of the standing surface wave.
-*/
+We output the amplitude of the standing surface wave.*/
 
 event amplitude (i++) {
 
-  /**
-  To get an accurate amplitude, we reconstruct interface position
-  (using height functions) and take the corresponding maximum. */
+  /*To get an accurate amplitude, we reconstruct interface position
+  (using height functions) and take the corresponding maximum.*/
 
   scalar pos[], pofOcean[];
   position (f, pos, {0,1}); //computing the position of the interface 
   position (fOcean, pofOcean, {0,1}); //computing the position of the interface 
   double max = statsf(pos).max;
   double maxOcean = statsf(pofOcean).max;
+   
+  /*We output the corresponding evolution in a file indexed with the
+  case number.*/
 
-  /**
-  We output the corresponding evolution in a file indexed with the
-  case number. */
   if (i == 0) {
     fprintf (fp2, "t AmpOcean AmpIce\n");
   }
@@ -148,3 +147,4 @@ event logfile (i++) {
   fprintf (ferr, "%d %g %g %d\n", i, t, ke, mgp.i);
   fflush (fp1);
 }
+
