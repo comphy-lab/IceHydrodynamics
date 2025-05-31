@@ -46,5 +46,5 @@ Each model uses Basilisk’s **volume-of-fluid (VOF)** method to track fluid int
 
 ## Acknowledgements
 
-Thanks to Stéphane Popinet and the Basilisk community and its developers for providing the computational tools used in this work.
+Thanks to Vatsal Sanjay, Stéphane Popinet and the Basilisk community for providing the computational tools and insight used in this work.
 
