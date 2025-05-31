@@ -22,20 +22,19 @@ Each model uses Basilisk’s **volume-of-fluid (VOF)** method to track fluid int
 
 ## File Structure
 
+- `README.md`
+- `TestCases/`
+  - `Waveswater.c` – Two-fluid (Air/Ocean) viscous model
+  - `ViscousOilOnWaterWaves.c` – Three-fluid (Air/Ice/Ocean) viscous model
+  - `IceOnWaterWaves.c` – Three-fluid with viscoelastic ice
+- `src-IceHydro/`
+  - `log-conform-IceElastic.h` – Log-conformation viscoelastic model
+  - `reduced-IceHydro.h` – Simplified viscoelastic model
+  - `two-phase-IceHydro.h` – Two-phase hydrodynamics
+- `output/`
+  - `logfile.dat` – Time series output of simulation logs
+  - `amplitude.dat` – Recorded interface wave amplitudes
 
-.
-├── README.md
-├── TestCases/
-│   ├── Waveswater.c               # Two-fluid (Air/Ocean) viscous model
-│   ├── ViscousOilOnWaterWaves.c   # Three-fluid (Air/Ice/Ocean) viscous model
-│   └── IceOnWaterWaves.c          # Three-fluid with viscoelastic ice
-├── src-IceHydro/
-│   ├── log-conform-IceElastic.h   # Log-conformation viscoelastic model
-│   ├── reduced-IceHydro.h         # Simplified viscoelastic model
-│   └── two-phase-IceHydro.h       # Two-phase hydrodynamics
-├── output/
-│   ├── logfile.dat                # Time series output of simulation logs
-│   └── amplitude.dat              # Recorded interface wave amplitudes
 
 ## Author
 
